@@ -1,15 +1,40 @@
 import { useState } from "react";
+import { useAuth } from "../contexts/authentication";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+
+  const { register } = useAuth();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // 🐨 Todo: Exercise #2
     // นำ Function `register` ใน AuthContext มา Execute ใน Event Handler ตรงนี้
+    setError(null);
+    const data = {
+      username,
+      password,
+      firstName,
+      lastName,
+    };
+
+    try {
+      await register(data);
+      setUsername("");
+      setPassword("");
+      setFirstName("");
+      setLastName("");
+      navigate("/login");
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+    }
   };
 
   return (
@@ -37,7 +62,7 @@ function RegisterPage() {
             <input
               id="password"
               name="password"
-              type="text"
+              type="password"
               placeholder="Enter password here"
               onChange={(event) => {
                 setPassword(event.target.value);
