@@ -5,6 +5,7 @@ import { client } from './utils/db.js';
 import postRouter from './apps/posts.js';
 import authRouter from './apps/auth.js';
 import dotenv from 'dotenv';
+import { protect } from './middlewares/protect.js';
 
 async function init() {
    const app = express();
@@ -18,7 +19,7 @@ async function init() {
    app.use(express.json());
    // app.use(express.urlencoded({ extended: true }));
    app.use(bodyParser.json());
-   app.use('/posts', postRouter);
+   app.use('/posts', protect, postRouter);
    app.use('/', authRouter);
 
    app.get('/', (req, res) => {
